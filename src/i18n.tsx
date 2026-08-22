@@ -24,6 +24,20 @@ const TITLES: Record<Lang, string> = {
 
 /* ── UI 字串字典 ── */
 const S = {
+  // Hero
+  heroBadge: { zhCN: "AI API 采购决策看板", zhTW: "AI API 採購決策看板", en: "AI API buying dashboard" },
+  heroTitleA: { zhCN: "哪家 AI API 最便宜，", zhTW: "哪家 AI API 最便宜，", en: "Which AI API is cheapest — " },
+  heroTitleB: { zhCN: "一眼定夺", zhTW: "一眼定奪", en: "see it at a glance" },
+  heroDesc: {
+    zhCN: "把分散在各家平台的價格情報壓成一張能直接結帳的表：即時監測、成本試算、避坑指南、採購對照，一鍵匯出 Excel。",
+    zhTW: "把分散在各家平台的價格情報壓成一張能直接結帳的表：即時監測、成本試算、避坑指南、採購對照，一鍵匯出 Excel。",
+    en: "Every platform's pricing, distilled into one checkout-ready sheet: live monitoring, cost simulator, pitfall guide, buying plays — with one-click Excel export.",
+  },
+  heroStatPlatforms: { zhCN: "平台", zhTW: "平台", en: "platforms" },
+  heroStatModels: { zhCN: "模型", zhTW: "模型", en: "models" },
+  heroStatFloor: { zhCN: "地板价 ¥0.10／M", zhTW: "地板價 ¥0.10／M", en: "floor ¥0.10/M" },
+  heroCta: { zhCN: "查看全面监测", zhTW: "查看全面監測", en: "Open full monitor" },
+
   // 導覽列
   brand1: { zhCN: "便宜 API", zhTW: "便宜 API", en: "Cheap AI API" },
   brand2: { zhCN: "采购账本", zhTW: "採購帳本", en: "Price Ledger" },

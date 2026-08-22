@@ -6,12 +6,15 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import PitfallNote from "./components/PitfallNote";
 import PriceTable from "./components/PriceTable";
 import Reveal from "./components/Reveal";
-import { IconAlert, IconArrow, IconCalc, IconCheck, IconCurve, IconMoon, IconRadar, IconRefresh, IconSun } from "./components/icons";
+import { IconAlert, IconArrow, IconCalc, IconCheck, IconCurve, IconLedger, IconMoon, IconRadar, IconRefresh, IconSun } from "./components/icons";
+import { FULL_PRICING } from "./data/fullPricing";
 import { I18nProvider, LANGS, UNIT_NOTES_TR, useI18n } from "./i18n";
 import { ThemeProvider, useTheme } from "./theme";
 
 // 即時監測頁（含 Recharts）較重，延遲到進入 /full 路由時才載入
 const LiveBoard = lazy(() => import("./components/LiveBoard"));
+
+const FULL_MODEL_COUNT = FULL_PRICING.length;
 
 const NAV = [
   { href: "#table", key: "navTable" },
@@ -40,6 +43,51 @@ function LangSwitch() {
         </button>
       ))}
     </div>
+  );
+}
+
+/* ── 首頁 Hero（macOS 風格統計門面） ── */
+function Hero() {
+  const { t } = useI18n();
+  const stats = [
+    { n: "12", label: t("heroStatPlatforms") },
+    { n: String(FULL_MODEL_COUNT), label: t("heroStatModels") },
+    { n: t("heroStatFloor"), label: "" },
+  ];
+  return (
+    <header className="pt-2 text-center">
+      <p className="glass-soft mx-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[11px] font-bold tracking-[0.22em] text-violet-300">
+        <span className="live-dot h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        {t("heroBadge")}
+      </p>
+      <h1 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-black leading-[1.15] text-mist-100 sm:text-6xl">
+        {t("heroTitleA")}
+        <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-300 bg-clip-text text-transparent">
+          {t("heroTitleB")}
+        </span>
+      </h1>
+      <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-mist-500 sm:text-base">{t("heroDesc")}</p>
+
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        {stats.map((s) => (
+          <div key={s.label + s.n} className="glass flex min-w-[120px] flex-col items-center rounded-2xl px-6 py-3.5">
+            <span className="font-display text-2xl font-black text-violet-300">{s.n}</span>
+            {s.label && <span className="mt-0.5 font-mono text-[11px] text-mist-500">{s.label}</span>}
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a href="#table" onClick={(e) => { e.preventDefault(); document.querySelector("#table")?.scrollIntoView({ behavior: "smooth" }); }} className="btn-primary flex items-center gap-2 px-6 py-3 text-sm font-bold">
+          <IconLedger className="h-4 w-4" />
+          {t("navTable")}
+        </a>
+        <Link to="/full" className="btn-ghost flex items-center gap-2 px-6 py-3 text-sm font-bold">
+          <IconRadar className="h-4 w-4" />
+          {t("heroCta")}
+        </Link>
+      </div>
+    </header>
   );
 }
 
@@ -226,7 +274,10 @@ function LedgerPage({ notify }: { notify: (msg: string) => void }) {
   const { t } = useI18n();
   return (
     <main className="mx-auto max-w-6xl px-5 pb-36 pt-12 lg:pb-20">
-      <div className="flex flex-col gap-20">
+      <Reveal>
+        <Hero />
+      </Reveal>
+      <div className="mt-20 flex flex-col gap-20">
         <Reveal>
           <PriceTable notify={notify} />
         </Reveal>
