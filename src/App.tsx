@@ -62,6 +62,35 @@ function ThemeToggle() {
   );
 }
 
+/* ── 頂部閱讀進度條 ── */
+function ReadProgress() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const p = max > 0 ? Math.min(doc.scrollTop / max, 1) : 0;
+      el.style.transform = `scaleX(${p})`;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+  return <div ref={ref} className="read-progress" style={{ transform: "scaleX(0)" }} aria-hidden />;
+}
+
 /* ── macOS Dock 式行動端底部錨點導航 ── */
 const DOCK_ITEMS = [
   { href: "#table", key: "navTable", Icon: IconRadar },
@@ -347,6 +376,7 @@ function Shell() {
         </Routes>
       </ErrorBoundary>
 
+      <ReadProgress />
       <MobileDock />
 
       {toast && (

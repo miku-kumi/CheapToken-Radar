@@ -20,9 +20,9 @@
   --noise-opacity: 0.025;
 
   /* ── 文字階 ── */
-  --tx: #191430;        /* 主文字   (mist-100) */
-  --tx-2: #453e68;      /* 次文字   (mist-300) */
-  --tx-3: #77709e;      /* 弱文字   (mist-500) */
+  --tx: #171227;        /* 主文字   (mist-100) */
+  --tx-2: #40395f;      /* 次文字   (mist-300) */
+  --tx-3: #655d87;      /* 弱文字   (mist-500) — WCAG AA ≥4.5 對玻璃白 */
 
   /* ── 深底色階（輸入框／選單底等） ── */
   --ink-950: #fcfbff;
@@ -224,6 +224,26 @@ body::after {
   pointer-events: none;
   opacity: var(--noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* 鍵盤導航焦點環（不干擾滑鼠點擊） */
+:focus-visible {
+  outline: 2px solid var(--violet-400);
+  outline-offset: 2px;
+}
+
+/* 頂部閱讀進度條（Safari 風格細線） */
+.read-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2.5px;
+  width: 100%;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #8b5cf6, #d946ef, #06b6d4);
+  z-index: 90;
+  pointer-events: none;
+  will-change: transform;
 }
 
 ::selection {

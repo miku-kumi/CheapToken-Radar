@@ -1,0 +1,12 @@
+{
+  "name": "CheapToken Radar｜便宜 AI API 價格雷達",
+  "short_name": "TokenRadar",
+  "description": "較為全面的 AI API 價格總結：12 平台 54 模型即時監測、月成本試算、一鍵匯出 Excel。",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b0716",
+  "theme_color": "#8b5cf6",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
