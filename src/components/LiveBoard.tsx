@@ -10,6 +10,7 @@ import {
   type LiveTag,
 } from "../data/fullPricing";
 import { LIVE_TAG_I18N, MODEL_I18N, NOTE_I18N, loc, platformName, useI18n, type Lang } from "../i18n";
+import ErrorBoundary from "./ErrorBoundary";
 import { IconArrow, IconDownload, IconExternal, IconRefresh, IconSearch, IconSort } from "./icons";
 import PriceIntelligence, { type IQPoint } from "./PriceIntelligence";
 
@@ -570,8 +571,26 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
         </p>
       </section>
 
-      {/* 價格×智力曲線 */}
-      <PriceIntelligence points={iqPoints} />
+      {/* 價格×智力曲線（局部錯誤邊界：圖表崩潰不影響整頁） */}
+      <ErrorBoundary
+        fallback={(_error, reset) => (
+          <section id="iq-curve" className="scroll-mt-28">
+            <div className="glass flex flex-col items-center justify-center rounded-[1.75rem] px-6 py-14 text-center">
+              <p className="font-display text-4xl font-black text-rose-300/60">!</p>
+              <p className="mt-3 text-sm font-bold text-mist-100">{t("iqError")}</p>
+              <button
+                onClick={reset}
+                className="btn-primary mt-6 flex cursor-pointer items-center gap-2 px-5 py-2.5 text-sm font-bold"
+              >
+                <IconRefresh className="h-4 w-4" />
+                {t("iqRetry")}
+              </button>
+            </div>
+          </section>
+        )}
+      >
+        <PriceIntelligence points={iqPoints} />
+      </ErrorBoundary>
 
       {/* 返回 */}
       <div className="flex justify-center">

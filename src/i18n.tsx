@@ -215,6 +215,8 @@ const S = {
     en: "Free models (¥0) excluded · IQ index is a weighted estimate from public benchmarks — reference only",
   },
   iqLoading: { zhCN: "图表载入中…", zhTW: "圖表載入中…", en: "Loading chart…" },
+  iqError: { zhCN: "价格×智力曲线加载失败，其余数据不受影响。", zhTW: "價格×智力曲線載入失敗，其餘資料不受影響。", en: "The price×IQ curve failed to render. Other data is unaffected." },
+  iqRetry: { zhCN: "重试加载", zhTW: "重試載入", en: "Retry" },
   iqOfficialTitle: { zhCN: "锁定目标？直接前往官方网站开通", zhTW: "鎖定目標？直接前往官方網站開通", en: "Picked a winner? Go straight to the official site" },
   iqOfficialNote: { zhCN: "价格页以官方为准", zhTW: "價格頁以官方為準", en: "Official pricing pages prevail" },
   iqInput: { zhCN: "输入", zhTW: "輸入", en: "Input" },

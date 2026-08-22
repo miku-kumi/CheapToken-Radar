@@ -140,14 +140,6 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
       return next;
     });
 
-  // 數據簽名：每次即時價更新（30 秒一輪）都會變化，
-  // 作為 ComposedChart 的 key 強制重新掛載，避免 Recharts 原地更新數據時
-  // 繪圖失敗導致「只剩背景」的問題。
-  const chartKey = useMemo(
-    () => `${visible.length}:${frontier.length}:${visible.map((p) => p.x.toFixed(2)).join("|")}`,
-    [visible, frontier],
-  );
-
   return (
     <section id="iq-curve" className="scroll-mt-28">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -220,7 +212,7 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
 
         <div ref={chartRef} className="mt-5 h-[400px] w-full overflow-hidden">
           {chartW > 0 ? (
-            <ComposedChart key={chartKey} width={chartW} height={400} margin={{ top: 12, right: 18, bottom: 8, left: 0 }}>
+            <ComposedChart width={chartW} height={400} margin={{ top: 12, right: 18, bottom: 8, left: 0 }}>
               <CartesianGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 6" />
               <XAxis
                 type="number"
