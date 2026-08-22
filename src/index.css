@@ -528,6 +528,20 @@ input[type="number"] {
   [data-theme="dark"] .bg-ink-950\/70 { background-color: rgba(11, 7, 22, 0.88); }
 }
 
+/* 觸摸裝置：滑桿拇指加大到 24px，符合 44pt 觸控目標建議 */
+@media (pointer: coarse) {
+  input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    border-width: 5px;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-width: 5px;
+  }
+}
+
 /* 小螢幕排版比例緊湊化：修正「比例過大」的擁擠感來源 */
 @media (max-width: 640px) {
   html { font-size: 15px; }
@@ -543,3 +557,103 @@ input[type="number"] {
   }
   html { scroll-behavior: auto; }
 }
+/* ═══════════════ macOS Dock 式行動端底部導航 ═══════════════ */
+
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 1.35rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  box-shadow:
+    0 2px 6px rgba(20, 12, 60, 0.08),
+    0 14px 40px -10px rgba(70, 40, 160, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+[data-theme="dark"] .dock {
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.4),
+    0 14px 40px -10px rgba(76, 29, 149, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+/* Dock 圖標：hover/active 時 macOS 式放大並帶輕微上浮 */
+.dock-item {
+  position: relative;
+  display: flex;
+  width: 46px;
+  height: 42px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 0.9rem;
+  color: var(--tx-3);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.dock-item:active {
+  transform: translateY(-8px) scale(1.22);
+  background: rgba(139, 92, 246, 0.16);
+  color: var(--violet-300);
+}
+@media (hover: hover) {
+  .dock-item:hover {
+    transform: translateY(-7px) scale(1.16);
+    background: rgba(139, 92, 246, 0.13);
+    color: var(--violet-300);
+  }
+}
+/* 相鄰圖標的跟隨縮放（dock 精髓） */
+@media (hover: hover) {
+  .dock-item:hover + .dock-item { transform: translateY(-3px) scale(1.06); }
+  .dock-item:hover:has(+ .dock-item) ~ .dock-item { }
+}
+.dock-item.is-active {
+  color: var(--violet-300);
+}
+.dock-item.is-active::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.85;
+}
+/* 行動端 dock 不用模糊（性能降級由全域規則處理，這裡補實底） */
+@media (max-width: 1024px) {
+  [data-theme="light"] .dock { background: rgba(255, 255, 255, 0.92); }
+  [data-theme="dark"] .dock { background: rgba(23, 17, 49, 0.94); }
+}
+
+/* 表格橫向滾動提示遮罩 */
+.scroll-hint {
+  position: relative;
+}
+.scroll-hint::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 42px;
+  pointer-events: none;
+  background: linear-gradient(to left, var(--scroll-hint-color, rgba(255,255,255,0.9)), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.scroll-hint.can-scroll::after { opacity: 1; }
+[data-theme="dark"] .scroll-hint { --scroll-hint-color: rgba(11, 7, 22, 0.92); }

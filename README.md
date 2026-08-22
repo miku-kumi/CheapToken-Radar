@@ -51,6 +51,34 @@
 搜尋、標籤、福利文案、平台名（百煉→Bailian、火山引擎→Volcano Engine）全部同步翻譯，
 **匯出的 Excel 也跟著目前語言走**。
 
+### 🌗 明暗雙主題
+
+導覽列的 **☀️／🌙** 按鈕一鍵切換白天／夜間模式：
+
+- **預設白天模式**，選擇自動記憶（localStorage），重新整理不閃爍
+- 支援 `?theme=dark` / `?theme=light` URL 參數，方便分享指定主題的連結
+- 手機瀏覽器狀態列顏色（meta theme-color）跟隨主題同步變化
+- 圖表、卡片、按鈕全套配色跟隨主題，無死角的換膚
+
+### 🪟 macOS 風格介面
+
+- 所有區塊採用 macOS 視窗式**毛玻璃圓角面板**：高光描邊、內陰影、柔和投影
+- 行動端底部有 **Dock 式懸浮導航**，圖標帶 macOS Dock 的彈性放大效果，滾動時自動高亮當前區塊
+- 全站動畫僅用 GPU 合成屬性（transform／opacity），絲滑不掉幀
+
+### 📱 移動端極致優化
+
+手機上的性能問題逐一擊破：
+
+| 優化項 | 做法 |
+| --- | --- |
+| 毛玻璃模糊 | 行動端自動降級為不透明實底（GPU 即時模糊是掉幀元兇） |
+| 漂浮光球動畫 | 小螢幕隱藏，改用靜態漸變氛圍光 |
+| iOS 滾動重繪 | 移除 `background-attachment: fixed`，改固定偽元素 |
+| 表格橫向滾動 | 右緣漸隱提示 + memo 化行組件跳過無關重渲染 |
+| 觸控目標 | 滑桿拇指加大至 24px，符合觸控可用性建議 |
+| 動效偏好 | 尊重系統「減少動態效果」設置（prefers-reduced-motion） |
+
 ### 📤 一鍵匯出 Excel
 
 - 核心帳本：`價格表 ＋ 採購決策對照 ＋ 計價須知` 三個工作表
@@ -63,7 +91,7 @@ SCNet · SiliconFlow · OpenRouter · DeepSeek · 百煉（阿里）· 智譜 ·
 ## 技術棧
 
 - **React 18 + TypeScript + Vite** — 單頁應用，HashRouter 適配靜態託管
-- **Tailwind CSS v4** — 毛玻璃深色紫調設計語言
+- **Tailwind CSS v4** — CSS 變數驅動的明暗雙主題設計語言（@theme inline 換膚）
 - **Recharts** — 價格×智力對數散點圖（自製 ResizeObserver 測量，捲動不閃白）
 - **SheetJS (xlsx)** — 瀏覽器端 Excel 匯出，零後端
 - **GitHub Actions** — push 即自動部署到 GitHub Pages

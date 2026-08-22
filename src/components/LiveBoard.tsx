@@ -11,6 +11,7 @@ import {
 } from "../data/fullPricing";
 import { LIVE_TAG_I18N, MODEL_I18N, NOTE_I18N, loc, platformName, useI18n, type Lang } from "../i18n";
 import ErrorBoundary from "./ErrorBoundary";
+import { useScrollHint } from "../lib/useScrollHint";
 import { IconArrow, IconDownload, IconExternal, IconRefresh, IconSearch, IconSort } from "./icons";
 import PriceIntelligence, { type IQPoint } from "./PriceIntelligence";
 
@@ -135,6 +136,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const tableScroll = useScrollHint<HTMLDivElement>();
   const liveRef = useRef(live);
   liveRef.current = live;
 
@@ -297,7 +299,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
   const time = lastSync.toLocaleTimeString(timeLocale, { hour12: false });
 
   return (
-    <div className="flex flex-col gap-12 pt-10">
+    <div className="flex flex-col gap-12 pb-32 pt-10 lg:pb-6">
       {/* 頁首 */}
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div>
@@ -484,7 +486,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
 
       {/* 即時價格表 */}
       <section className="glass overflow-hidden rounded-[1.75rem]">
-        <div className="overflow-x-auto">
+        <div ref={tableScroll.ref} className={`scroll-hint overflow-x-auto ${tableScroll.canScroll ? "can-scroll" : ""}`}>
           <table className="w-full min-w-[1020px] border-collapse text-left">
             <thead>
               <tr className="border-b border-line-10 bg-fill-5">
@@ -567,7 +569,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
           </table>
         </div>
         <p className="border-t border-line-8 px-5 py-3.5 text-[11px] leading-relaxed text-mist-500/80">
-          ⚠️ 即時價為基準價上的模擬市場波動演示（每 30 秒刷新），真實計費以各平台官方價格頁為準；「~」為美元定價按 ¥7.2/$ 粗算。
+          {t("lFoot")}
         </p>
       </section>
 
@@ -596,7 +598,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
       <div className="flex justify-center">
         <Link to="/" className="btn-ghost flex items-center gap-2.5 px-6 py-3 text-sm font-bold text-mist-300">
           <IconArrow className="h-4 w-4 rotate-180" />
-          返回核心採購帳本
+          {t("lBack")}
         </Link>
       </div>
     </div>

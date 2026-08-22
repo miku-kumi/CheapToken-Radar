@@ -7,6 +7,7 @@ import {
   type PriceRow,
   type TagId,
 } from "../data/pricing";
+import { useScrollHint } from "../lib/useScrollHint";
 import { DEAL_I18N, TAG_I18N, loc, platformName, useI18n, type Lang } from "../i18n";
 import { IconDownload, IconSearch, IconSort, Medal } from "./icons";
 
@@ -79,6 +80,7 @@ export default function PriceTable({ notify }: { notify: (msg: string) => void }
   const [query, setQuery] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("input");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const tableScroll = useScrollHint<HTMLDivElement>();
 
   const tagLabel = (id: TagId) => (lang === "zhTW" ? TAGS[id].label : TAG_I18N[id][lang]);
 
@@ -204,7 +206,7 @@ export default function PriceTable({ notify }: { notify: (msg: string) => void }
 
       {/* 表格 */}
       <div className="glass mt-5 overflow-hidden rounded-[1.75rem]">
-        <div className="overflow-x-auto">
+        <div ref={tableScroll.ref} className={`scroll-hint overflow-x-auto ${tableScroll.canScroll ? "can-scroll" : ""}`}>
           <table className="w-full min-w-[940px] border-collapse text-left">
             <thead>
               <tr className="border-b border-line-10 bg-fill-5">

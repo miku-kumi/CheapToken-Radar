@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { HashRouter, Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Calculator from "./components/Calculator";
 import DecisionBoard from "./components/DecisionBoard";
@@ -6,7 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import PitfallNote from "./components/PitfallNote";
 import PriceTable from "./components/PriceTable";
 import Reveal from "./components/Reveal";
-import { IconArrow, IconCheck, IconCurve, IconMoon, IconRadar, IconRefresh, IconSun } from "./components/icons";
+import { IconAlert, IconArrow, IconCalc, IconCheck, IconCurve, IconMoon, IconRadar, IconRefresh, IconSun } from "./components/icons";
 import { I18nProvider, LANGS, UNIT_NOTES_TR, useI18n } from "./i18n";
 import { ThemeProvider, useTheme } from "./theme";
 
@@ -59,6 +59,71 @@ function ThemeToggle() {
         {isDark ? <IconMoon className="h-4 w-4" /> : <IconSun className="h-4 w-4" />}
       </span>
     </button>
+  );
+}
+
+/* ── macOS Dock 式行動端底部錨點導航 ── */
+const DOCK_ITEMS = [
+  { href: "#table", key: "navTable", Icon: IconRadar },
+  { href: "#calc", key: "navCalc", Icon: IconCalc },
+  { href: "#pitfall", key: "navPitfall", Icon: IconAlert },
+  { href: "#decision", key: "navDecision", Icon: IconCheck },
+] as const;
+
+function MobileDock() {
+  const { t } = useI18n();
+  const [active, setActive] = useState<string>("#table");
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+    // 滾動偵測當前所在區塊，高亮對應 dock 圖標
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) setActive("#" + e.target.id);
+        }
+      },
+      { rootMargin: "-30% 0px -55% 0px" },
+    );
+    for (const it of DOCK_ITEMS) {
+      const el = document.querySelector(it.href);
+      if (el) io.observe(el);
+    }
+    return () => io.disconnect();
+  }, [pathname]);
+
+  if (pathname !== "/") return null;
+
+  const go = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    document.querySelector(href)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  return (
+    <nav className="dock lg:!hidden" aria-label="Sections">
+      {DOCK_ITEMS.map(({ href, key, Icon }) => (
+        <a key={href} href={href} onClick={(e) => go(e, href)} className={`dock-item ${active === href ? "is-active" : ""}`} aria-label={t(key)} title={t(key)}>
+          <Icon className="h-[19px] w-[19px]" />
+          <span className="text-[9px] font-bold leading-none">{t(key)}</span>
+        </a>
+      ))}
+      <span className="mx-1 h-8 w-px self-center bg-line-10" />
+      <a
+        href="#top"
+        onClick={(e) => {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        className="dock-item"
+        aria-label={t("backToTop")}
+        title={t("backToTop")}
+      >
+        <IconArrow className="h-[19px] w-[19px] -rotate-90" />
+        <span className="text-[9px] font-bold leading-none">TOP</span>
+      </a>
+    </nav>
   );
 }
 
@@ -131,7 +196,7 @@ function NavBar() {
 function LedgerPage({ notify }: { notify: (msg: string) => void }) {
   const { t } = useI18n();
   return (
-    <main className="mx-auto max-w-6xl px-5 pb-20 pt-12">
+    <main className="mx-auto max-w-6xl px-5 pb-36 pt-12 lg:pb-20">
       <div className="flex flex-col gap-20">
         <Reveal>
           <PriceTable notify={notify} />
@@ -221,7 +286,7 @@ function Shell() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-x-clip">
+    <div id="top" className="relative min-h-screen overflow-x-clip">
       {/* 環境光層 */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="orb orb-a" />
@@ -282,8 +347,10 @@ function Shell() {
         </Routes>
       </ErrorBoundary>
 
+      <MobileDock />
+
       {toast && (
-        <div className="toast-in fixed bottom-6 left-1/2 z-[80] flex w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 items-start gap-3 rounded-2xl border border-violet-400/40 bg-ink-850/90 px-4 py-3.5 shadow-[0_12px_48px_rgba(20,8,60,0.7),0_0_28px_rgba(139,92,246,0.18)] backdrop-blur-xl">
+        <div className="toast-in fixed bottom-24 left-1/2 z-[80] lg:bottom-6 flex w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 items-start gap-3 rounded-2xl border border-violet-400/40 bg-ink-850/90 px-4 py-3.5 shadow-[0_12px_48px_rgba(20,8,60,0.7),0_0_28px_rgba(139,92,246,0.18)] backdrop-blur-xl">
           <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-500 text-white">
             <IconCheck className="h-3 w-3" strokeWidth={2.6} />
           </span>
