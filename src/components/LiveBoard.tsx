@@ -174,7 +174,10 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
 
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(refresh, REFRESH_MS);
+    const t = setInterval(() => {
+      // 分頁隱藏時跳過刷新，節省無謂的重新渲染
+      if (!document.hidden) refresh();
+    }, REFRESH_MS);
     return () => clearInterval(t);
   }, [paused, refresh]);
 

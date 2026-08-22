@@ -1,15 +1,46 @@
-import { lazy, Suspense, useCallback, useRef, useState } from "react";
+import { Component, lazy, Suspense, useCallback, useRef, useState, type ReactNode } from "react";
 import { HashRouter, Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Calculator from "./components/Calculator";
 import DecisionBoard from "./components/DecisionBoard";
 import PitfallNote from "./components/PitfallNote";
 import PriceTable from "./components/PriceTable";
 import Reveal from "./components/Reveal";
-import { IconArrow, IconCheck, IconCurve, IconRadar } from "./components/icons";
+import { IconArrow, IconCheck, IconCurve, IconRadar, IconRefresh } from "./components/icons";
 import { I18nProvider, LANGS, UNIT_NOTES_TR, useI18n } from "./i18n";
 
 // 即時監測頁（含 Recharts）較重，延遲到進入 /full 路由時才載入
 const LiveBoard = lazy(() => import("./components/LiveBoard"));
+
+/* ── 錯誤邊界：任何渲染錯誤都不再讓整頁白屏 ── */
+class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <main className="mx-auto flex max-w-6xl flex-col items-center px-5 pb-32 pt-28 text-center">
+          <p className="font-display text-7xl font-black text-rose-300/60">!</p>
+          <h1 className="mt-4 font-display text-3xl font-black text-mist-100">頁面發生錯誤</h1>
+          <p className="mt-3 max-w-md text-sm leading-relaxed text-mist-500">
+            執行階段出現未預期的問題。請重新整理頁面，或回到首頁。
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-primary mt-8 flex cursor-pointer items-center gap-2 px-6 py-3 text-sm font-bold"
+          >
+            <IconRefresh className="h-4 w-4" />
+            重新整理
+          </button>
+        </main>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const NAV = [
   { href: "#table", key: "navTable" },
@@ -207,24 +238,26 @@ function Shell() {
 
       <NavBar />
 
-      <Routes>
-        <Route path="/" element={<LedgerPage notify={notify} />} />
-        <Route
-          path="/full"
-          element={
-            <Suspense
-              fallback={
-                <main className="mx-auto flex min-h-[60vh] max-w-6xl items-center justify-center px-5">
-                  <p className="font-mono text-xs text-mist-500">{t("lLoading")}…</p>
-                </main>
-              }
-            >
-              <LiveBoard notify={notify} />
-            </Suspense>
-          }
-        />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<LedgerPage notify={notify} />} />
+          <Route
+            path="/full"
+            element={
+              <Suspense
+                fallback={
+                  <main className="mx-auto flex min-h-[60vh] max-w-6xl items-center justify-center px-5">
+                    <p className="font-mono text-xs text-mist-500">{t("lLoading")}…</p>
+                  </main>
+                }
+              >
+                <LiveBoard notify={notify} />
+              </Suspense>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ErrorBoundary>
 
       {toast && (
         <div className="toast-in fixed bottom-6 left-1/2 z-[80] flex w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 items-start gap-3 rounded-2xl border border-violet-400/40 bg-ink-850/90 px-4 py-3.5 shadow-[0_12px_48px_rgba(20,8,60,0.7),0_0_28px_rgba(139,92,246,0.18)] backdrop-blur-xl">
