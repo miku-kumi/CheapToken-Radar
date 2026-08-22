@@ -20,7 +20,7 @@ export default function PitfallNote() {
               <span className="text-base leading-relaxed text-mist-100">
                 <span className="font-black text-rose-300">{t("pAlertA")}</span>
                 {t("pAlertB")}
-                <span className="mt-2 block rounded-2xl border border-white/12 bg-ink-950/50 px-4 py-3 font-mono text-sm text-mist-300">
+                <span className="mt-2 block rounded-2xl border border-line-12 bg-ink-950/50 px-4 py-3 font-mono text-sm text-mist-300">
                   {t("pFormula")
                     .split(/＋|\+/)
                     .map((part, i, arr) => (
@@ -50,7 +50,7 @@ export default function PitfallNote() {
                         ¥{e.input.toFixed(2)} → <span className="font-bold text-rose-300">¥{e.output.toFixed(2)}</span>
                       </span>
                     </div>
-                    <div className="mt-1.5 flex h-2 gap-px overflow-hidden rounded-full bg-white/6">
+                    <div className="mt-1.5 flex h-2 gap-px overflow-hidden rounded-full bg-fill-6">
                       <div className="bar-fill h-full bg-cyan-400/60" style={{ width: `${100 / (1 + ratio)}%` }} />
                       <div className="bar-fill h-full bg-rose-400/80" style={{ width: `${100 - 100 / (1 + ratio)}%` }} />
                     </div>
@@ -70,7 +70,7 @@ export default function PitfallNote() {
       {/* 一句話總結 */}
       <Reveal delay={80}>
         <div className="glass mt-5 overflow-hidden rounded-[1.75rem]">
-          <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
+          <div className="flex items-center justify-between border-b border-line-10 px-5 py-3">
             <p className="font-display text-lg font-black text-mist-100">{t("pVerdictTitle")}</p>
             <p className="font-mono text-[11px] tracking-wider text-mist-500">TL;DR</p>
           </div>
@@ -79,7 +79,7 @@ export default function PitfallNote() {
               <li
                 key={text}
                 className={`group flex items-center gap-4 px-5 py-3.5 transition-colors duration-150 hover:bg-violet-500/8 ${
-                  i > 0 ? "border-t border-white/7" : ""
+                  i > 0 ? "border-t border-line-7" : ""
                 }`}
               >
                 <Medal kind={VERDICTS[i].medal} className="h-6 w-6 shrink-0 transition-transform duration-200 group-hover:scale-115" />

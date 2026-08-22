@@ -6,8 +6,9 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import PitfallNote from "./components/PitfallNote";
 import PriceTable from "./components/PriceTable";
 import Reveal from "./components/Reveal";
-import { IconArrow, IconCheck, IconCurve, IconRadar, IconRefresh } from "./components/icons";
+import { IconArrow, IconCheck, IconCurve, IconMoon, IconRadar, IconRefresh, IconSun } from "./components/icons";
 import { I18nProvider, LANGS, UNIT_NOTES_TR, useI18n } from "./i18n";
+import { ThemeProvider, useTheme } from "./theme";
 
 // 即時監測頁（含 Recharts）較重，延遲到進入 /full 路由時才載入
 const LiveBoard = lazy(() => import("./components/LiveBoard"));
@@ -23,7 +24,7 @@ const NAV = [
 function LangSwitch() {
   const { lang, setLang } = useI18n();
   return (
-    <div className="flex items-center rounded-full border border-white/14 bg-white/6 p-0.5" role="group" aria-label="Language">
+    <div className="flex items-center rounded-full border border-line-14 bg-fill-6 p-0.5" role="group" aria-label="Language">
       {LANGS.map((l) => (
         <button
           key={l.id}
@@ -39,6 +40,25 @@ function LangSwitch() {
         </button>
       ))}
     </div>
+  );
+}
+
+/* ── 主題切換（白天／夜間） ── */
+function ThemeToggle() {
+  const { isDark, toggle } = useTheme();
+  const label = isDark ? "Switch to light mode" : "Switch to dark mode";
+  return (
+    <button
+      onClick={toggle}
+      title={label}
+      aria-label={label}
+      aria-pressed={isDark}
+      className="btn-ghost flex h-[30px] w-[30px] items-center justify-center !rounded-full"
+    >
+      <span className="theme-toggle-icon relative flex h-4 w-4 items-center justify-center text-violet-300">
+        {isDark ? <IconMoon className="h-4 w-4" /> : <IconSun className="h-4 w-4" />}
+      </span>
+    </button>
   );
 }
 
@@ -60,7 +80,7 @@ function NavBar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/8 bg-ink-950/70 backdrop-blur-2xl">
+    <nav className="sticky top-0 z-50 border-b border-line-8 bg-ink-950/70 backdrop-blur-2xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3">
         <Link to="/" className="flex shrink-0 items-center gap-2.5">
           <svg viewBox="0 0 24 24" className="h-7 w-7 drop-shadow-[0_0_10px_rgba(139,92,246,0.6)]" aria-hidden>
@@ -90,6 +110,7 @@ function NavBar() {
         </div>
 
         <div className="flex shrink-0 items-center gap-2.5">
+          <ThemeToggle />
           <LangSwitch />
           <Link
             to="/full"
@@ -126,7 +147,7 @@ function LedgerPage({ notify }: { notify: (msg: string) => void }) {
         </Reveal>
       </div>
 
-      <footer className="mt-20 border-t border-white/8 pt-8">
+      <footer className="mt-20 border-t border-line-8 pt-8">
         <FooterNotes />
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <p className="font-mono text-[11px] text-mist-500/70">2026 · {t("iqOfficialNote")}</p>
@@ -178,11 +199,13 @@ function NotFound() {
 /* ── App：導覽列 + 路由 + Toast ── */
 export default function App() {
   return (
-    <HashRouter>
-      <I18nProvider>
-        <Shell />
-      </I18nProvider>
-    </HashRouter>
+    <ThemeProvider>
+      <HashRouter>
+        <I18nProvider>
+          <Shell />
+        </I18nProvider>
+      </HashRouter>
+    </ThemeProvider>
   );
 }
 
@@ -231,7 +254,7 @@ function Shell() {
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="flex cursor-pointer items-center gap-2 rounded-full border border-white/14 bg-white/6 px-6 py-3 text-sm font-bold text-mist-100"
+                className="flex cursor-pointer items-center gap-2 rounded-full border border-line-14 bg-fill-6 px-6 py-3 text-sm font-bold text-mist-100"
               >
                 重新整理
               </button>

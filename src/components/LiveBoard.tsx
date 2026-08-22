@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   FULL_PRICING,
@@ -25,7 +25,7 @@ type SortKey = "input" | "output" | "delta" | "iq";
 
 const fmt = (v: number) => (v < 10 ? v.toFixed(2) : v.toFixed(1));
 
-function Delta({ d }: { d: number }) {
+const Delta = memo(function Delta({ d }: { d: number }) {
   if (Math.abs(d) < 0.005) return <span className="font-mono text-xs text-mist-500">—</span>;
   const up = d > 0;
   return (
@@ -40,9 +40,9 @@ function Delta({ d }: { d: number }) {
       {Math.abs(d).toFixed(1)}%
     </span>
   );
-}
+});
 
-function Cell({ v, live, approx }: { v: number | null; live?: boolean; approx?: boolean }) {
+const Cell = memo(function Cell({ v, live, approx }: { v: number | null; live?: boolean; approx?: boolean }) {
   const { t } = useI18n();
   return (
     <td className="px-4 py-3.5 text-right font-mono text-sm whitespace-nowrap">
@@ -57,7 +57,7 @@ function Cell({ v, live, approx }: { v: number | null; live?: boolean; approx?: 
       )}
     </td>
   );
-}
+});
 
 function ExtremeCard({
   title,
@@ -100,7 +100,7 @@ function ExtremeCard({
                 href={url}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/14 bg-white/6 px-3 py-1.5 text-[11px] font-bold text-mist-300 transition-all duration-200 hover:border-violet-400/60 hover:text-violet-300"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-line-14 bg-fill-6 px-3 py-1.5 text-[11px] font-bold text-mist-300 transition-all duration-200 hover:border-violet-400/60 hover:text-violet-300"
               >
                 {t("lToOfficial")} <IconExternal className="h-3 w-3" />
               </a>
@@ -290,7 +290,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
     `flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap ${
       active
         ? "border-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-[0_4px_16px_rgba(139,92,246,0.45)]"
-        : "border-white/14 bg-white/5 text-mist-500 hover:border-violet-400/50 hover:text-mist-300"
+        : "border-line-14 bg-fill-5 text-mist-500 hover:border-violet-400/50 hover:text-mist-300"
     }`;
 
   const timeLocale = lang === "en" ? "en-GB" : lang === "zhCN" ? "zh-CN" : "zh-TW";
@@ -373,13 +373,13 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t("lSearch")}
-              className="w-full rounded-full border border-white/14 bg-white/6 py-2.5 pl-11 pr-4 text-sm text-mist-100 outline-none transition-all placeholder:text-mist-500/60 focus:border-violet-400/60 focus:bg-white/9 focus:shadow-[0_0_0_4px_rgba(139,92,246,0.12)]"
+              className="w-full rounded-full border border-line-14 bg-fill-6 py-2.5 pl-11 pr-4 text-sm text-mist-100 outline-none transition-all placeholder:text-mist-500/60 focus:border-violet-400/60 focus:bg-fill-9 focus:shadow-[0_0_0_4px_rgba(139,92,246,0.12)]"
             />
           </label>
           <select
             value={sortKey}
             onChange={(e) => setSortKey(e.target.value as SortKey)}
-            className="cursor-pointer rounded-full border border-white/14 bg-ink-900 px-4 py-2.5 text-xs font-bold text-mist-300 outline-none transition-colors hover:border-violet-400/50"
+            className="cursor-pointer rounded-full border border-line-14 bg-ink-900 px-4 py-2.5 text-xs font-bold text-mist-300 outline-none transition-colors hover:border-violet-400/50"
           >
             <option value="input">{t("lSortInput")}</option>
             <option value="output">{t("lSortOutput")}</option>
@@ -411,11 +411,11 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
               {liveTagLabel(k, lang)}
             </button>
           ))}
-          <span className="mx-2 hidden h-5 w-px bg-white/12 sm:block" />
+          <span className="mx-2 hidden h-5 w-px bg-line-12 sm:block" />
           <select
             value={minCtx}
             onChange={(e) => setMinCtx(Number(e.target.value))}
-            className="cursor-pointer rounded-full border border-white/14 bg-ink-900 px-4 py-2 text-xs font-bold text-mist-300 outline-none transition-colors hover:border-violet-400/50"
+            className="cursor-pointer rounded-full border border-line-14 bg-ink-900 px-4 py-2 text-xs font-bold text-mist-300 outline-none transition-colors hover:border-violet-400/50"
           >
             <option value={0}>{t("lCtxAll")}</option>
             {CTX_OPTIONS.map((c) => (
@@ -470,12 +470,12 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
           </div>
         </div>
 
-        <div className="flex items-center justify-between border-t border-white/8 pt-3.5">
+        <div className="flex items-center justify-between border-t border-line-8 pt-3.5">
           <p className="font-mono text-xs text-mist-500">
             {tf("lShowing", { a: rows.length, b: FULL_PRICING.length })}
           </p>
           {filtered && (
-            <button onClick={resetAll} className="cursor-pointer rounded-full border border-white/14 px-3.5 py-1.5 text-xs font-bold text-mist-500 transition-colors hover:border-rose-400/60 hover:text-rose-300">
+            <button onClick={resetAll} className="cursor-pointer rounded-full border border-line-14 px-3.5 py-1.5 text-xs font-bold text-mist-500 transition-colors hover:border-rose-400/60 hover:text-rose-300">
               {t("lResetAll")}
             </button>
           )}
@@ -487,7 +487,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
         <div className="overflow-x-auto">
           <table className="w-full min-w-[1020px] border-collapse text-left">
             <thead>
-              <tr className="border-b border-white/10 bg-white/5">
+              <tr className="border-b border-line-10 bg-fill-5">
                 <th className="px-4 py-4 text-xs font-bold tracking-wider text-mist-500">{t("thPlatform")}</th>
                 <th className="px-4 py-4 text-xs font-bold tracking-wider text-mist-500">{t("thModel")}</th>
                 <th className="px-4 py-4 text-xs font-bold tracking-wider text-mist-500">{t("lThType")}</th>
@@ -499,7 +499,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
                 <th className="px-4 py-4 text-center text-xs font-bold tracking-wider text-mist-500">{t("lThOfficial")}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/6">
+            <tbody className="divide-y divide-line-6">
               {rows.map((r) => {
                 const baseIn = r.input ?? 0;
                 const curIn = lv(r.id, r.input, "input") ?? 0;
@@ -548,7 +548,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
                         target="_blank"
                         rel="noreferrer"
                         title={tf("lOfficialGo", { p: platformName(r.platform, lang) })}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-white/5 text-mist-500 transition-all duration-200 hover:border-violet-400/60 hover:text-violet-300 hover:shadow-[0_0_14px_rgba(139,92,246,0.35)]"
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-line-12 bg-fill-5 text-mist-500 transition-all duration-200 hover:border-violet-400/60 hover:text-violet-300 hover:shadow-[0_0_14px_rgba(139,92,246,0.35)]"
                       >
                         <IconExternal className="h-3.5 w-3.5" />
                       </a>
@@ -566,7 +566,7 @@ export default function LiveBoard({ notify }: { notify: (msg: string) => void })
             </tbody>
           </table>
         </div>
-        <p className="border-t border-white/8 px-5 py-3.5 text-[11px] leading-relaxed text-mist-500/80">
+        <p className="border-t border-line-8 px-5 py-3.5 text-[11px] leading-relaxed text-mist-500/80">
           ⚠️ 即時價為基準價上的模擬市場波動演示（每 30 秒刷新），真實計費以各平台官方價格頁為準；「~」為美元定價按 ¥7.2/$ 粗算。
         </p>
       </section>

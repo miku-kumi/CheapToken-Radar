@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { LIVE_PLATFORM_DOT, LIVE_PLATFORM_URL } from "../data/fullPricing";
 import { platformName, useI18n } from "../i18n";
+import { useTheme } from "../theme";
 import { IconCurve, IconExternal } from "./icons";
 
 export interface IQPoint {
@@ -70,6 +71,12 @@ function useChartWidth<T extends HTMLElement>() {
 
 export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
   const { lang, t, tf } = useI18n();
+  const { isDark } = useTheme();
+  // 圖表配色跟隨主題（Recharts 無法吃 CSS 變數，需 JS 側給值）
+  const chartTick = isDark ? "#9b90c6" : "#77709e";
+  const chartGrid = isDark ? "rgba(255,255,255,0.06)" : "rgba(24,18,60,0.08)";
+  const chartAxis = isDark ? "rgba(255,255,255,0.14)" : "rgba(24,18,60,0.16)";
+  const scatterStroke = isDark ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.9)";
   const [hidden, setHidden] = useState<Set<string>>(new Set());
   const { ref: chartRef, width: chartW } = useChartWidth<HTMLDivElement>();
 
@@ -202,8 +209,8 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
                 onClick={() => toggle(p)}
                 className={`flex cursor-pointer items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
                   off
-                    ? "border-white/10 bg-white/3 text-mist-500/50 line-through"
-                    : "border-white/14 bg-white/6 text-mist-100 hover:border-violet-400/50"
+                    ? "border-line-10 bg-fill-3 text-mist-500/50 line-through"
+                    : "border-line-14 bg-fill-6 text-mist-100 hover:border-violet-400/50"
                 }`}
                 title={platformName(p, lang)}
               >
@@ -217,7 +224,7 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
         <div ref={chartRef} className="mt-5 h-[400px] w-full overflow-hidden">
           {chartW > 0 ? (
             <ComposedChart width={chartW} height={400} margin={{ top: 12, right: 18, bottom: 8, left: 0 }}>
-              <CartesianGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 6" />
+              <CartesianGrid stroke={chartGrid} strokeDasharray="3 6" />
               <XAxis
                 type="number"
                 dataKey="x"
@@ -225,11 +232,11 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
                 domain={[domMin, domMax]}
                 ticks={xTicks}
                 tickFormatter={(v: number) => `¥${v}`}
-                tick={{ fill: "#9b90c6", fontSize: 11, fontFamily: "JetBrains Mono" }}
-                axisLine={{ stroke: "rgba(255,255,255,0.14)" }}
+                tick={{ fill: chartTick, fontSize: 11, fontFamily: "JetBrains Mono" }}
+                axisLine={{ stroke: chartAxis }}
                 tickLine={false}
                 allowDuplicatedCategory={false}
-                label={{ value: t("iqXLabel"), position: "insideBottomRight", offset: -4, fill: "#9b90c6", fontSize: 11 }}
+                label={{ value: t("iqXLabel"), position: "insideBottomRight", offset: -4, fill: chartTick, fontSize: 11 }}
               />
               <YAxis
                 type="number"
@@ -237,10 +244,10 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
                 domain={[yMin, yMax]}
                 ticks={yTicks}
                 width={42}
-                tick={{ fill: "#9b90c6", fontSize: 11, fontFamily: "JetBrains Mono" }}
-                axisLine={{ stroke: "rgba(255,255,255,0.14)" }}
+                tick={{ fill: chartTick, fontSize: 11, fontFamily: "JetBrains Mono" }}
+                axisLine={{ stroke: chartAxis }}
                 tickLine={false}
-                label={{ value: t("iqYLabel"), angle: -90, position: "insideLeft", offset: 14, fill: "#9b90c6", fontSize: 11 }}
+                label={{ value: t("iqYLabel"), angle: -90, position: "insideLeft", offset: 14, fill: chartTick, fontSize: 11 }}
               />
               <ZAxis range={[85, 85]} />
               <Tooltip content={<ChartTip />} cursor={{ strokeDasharray: "4 4", stroke: "rgba(167,139,250,0.45)" }} />
@@ -264,7 +271,7 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
                   data={pts}
                   fill={LIVE_PLATFORM_DOT[plat]}
                   fillOpacity={0.88}
-                  stroke="rgba(255,255,255,0.4)"
+                  stroke={scatterStroke}
                   strokeWidth={0.8}
                   isAnimationActive={false}
                 />
@@ -275,7 +282,7 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
           )}
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/8 pt-4">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line-8 pt-4">
           <p className="flex items-center gap-2 text-[11px] text-mist-500">
             <span className="inline-block h-0.5 w-6 rounded-full bg-cyan-400" style={{ borderTop: "2px dashed #22d3ee", background: "transparent" }} />
             {t("iqFrontier")}
@@ -299,7 +306,7 @@ export default function PriceIntelligence({ points }: { points: IQPoint[] }) {
               href={url}
               target="_blank"
               rel="noreferrer"
-              className="group flex items-center justify-between gap-2 rounded-2xl border border-white/12 bg-white/5 px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-400/55 hover:bg-violet-500/12 hover:shadow-[0_8px_24px_rgba(139,92,246,0.25)]"
+              className="group flex items-center justify-between gap-2 rounded-2xl border border-line-12 bg-fill-5 px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-400/55 hover:bg-violet-500/12 hover:shadow-[0_8px_24px_rgba(139,92,246,0.25)]"
             >
               <span className="flex items-center gap-2.5 text-sm font-bold text-mist-100">
                 <span

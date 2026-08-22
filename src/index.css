@@ -1,29 +1,192 @@
 @import "tailwindcss";
 
-@theme {
-  /* 深紫基底 */
-  --color-ink-950: #0b0716;
-  --color-ink-900: #120d26;
-  --color-ink-850: #171131;
-  --color-ink-800: #1f1842;
-  --color-ink-700: #2b2260;
-  --color-ink-600: #3d3185;
-  /* 霧紫文字階 */
-  --color-mist-100: #f2eefc;
-  --color-mist-300: #cfc7ec;
-  --color-mist-500: #9b90c6;
-  /* 舊語意色保留鍵名、換成科技感色票 */
-  --color-gold-300: #c4b5fd;
-  --color-gold-400: #a78bfa;
-  --color-gold-500: #8b5cf6;
-  --color-mint-400: #34d399;
-  --color-cyan-400: #22d3ee;
-  --color-coral-400: #fb7185;
+/* ═══════════════════════════════════════════════
+   設計 token 架構：
+   1) :root / [data-theme] 定義運行時語義變數
+   2) @theme inline 把 Tailwind 色鍵映射到變數，
+      切換 data-theme 即全站換膚（含透明度修飾）
+   ═══════════════════════════════════════════════ */
+
+:root {
+  color-scheme: light;
+
+  /* ── 頁面基底 ── */
+  --bg-page: #f4f3fb;
+  --bg-glow-1: rgba(139, 92, 246, 0.10);
+  --bg-glow-2: rgba(8, 145, 178, 0.07);
+  --bg-glow-3: rgba(217, 70, 239, 0.06);
+  --bg-grad-a: #f7f5fd;
+  --bg-grad-b: #efedf9;
+  --noise-opacity: 0.025;
+
+  /* ── 文字階 ── */
+  --tx: #191430;        /* 主文字   (mist-100) */
+  --tx-2: #453e68;      /* 次文字   (mist-300) */
+  --tx-3: #77709e;      /* 弱文字   (mist-500) */
+
+  /* ── 深底色階（輸入框／選單底等） ── */
+  --ink-950: #fcfbff;
+  --ink-900: #ffffff;
+  --ink-850: #ffffff;
+  --ink-800: #f3f1fb;
+  --ink-700: #e9e5f7;
+  --ink-600: #dcd6f0;
+
+  /* ── 品牌紫階 ── */
+  --gold-300: #7c3aed;
+  --gold-400: #8b5cf6;
+  --gold-500: #7c3aed;
+
+  /* ── 狀態色（淺色下加深保對比） ── */
+  --c-mint: #10b981;
+  --c-cyan: #0891b2;
+  --c-coral: #f43f5e;
+  --emerald-300: #059669;
+  --emerald-400: #10b981;
+  --rose-300: #e11d48;
+  --rose-400: #f43f5e;
+  --cyan-300: #0891b2;
+  --violet-200: #6d28d9;
+  --violet-300: #7c3aed;
+  --violet-400: #8b5cf6;
+
+  /* ── 線與填充（white/N 的主題化替身） ── */
+  --line-6: rgba(24, 18, 60, 0.07);
+  --line-7: rgba(24, 18, 60, 0.08);
+  --line-8: rgba(24, 18, 60, 0.09);
+  --line-10: rgba(24, 18, 60, 0.11);
+  --line-12: rgba(24, 18, 60, 0.13);
+  --line-14: rgba(24, 18, 60, 0.15);
+  --line-16: rgba(24, 18, 60, 0.18);
+  --fill-3: rgba(28, 22, 70, 0.03);
+  --fill-4: rgba(28, 22, 70, 0.04);
+  --fill-5: rgba(28, 22, 70, 0.05);
+  --fill-6: rgba(255, 255, 255, 0.72);
+  --fill-9: rgba(255, 255, 255, 0.92);
+
+  /* ── 玻璃面板（macOS 質感） ── */
+  --glass-bg: linear-gradient(165deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.58));
+  --glass-border: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.45)) border-box;
+  --glass-shadow:
+    0 1px 1px rgba(30, 20, 80, 0.03),
+    0 10px 34px -12px rgba(70, 50, 160, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --glass-blur: 20px saturate(1.35);
+  --glass-soft-bg: rgba(255, 255, 255, 0.55);
+  --glass-soft-border: rgba(255, 255, 255, 0.85);
+  --orb-opacity: 0.75;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-page: #0b0716;
+  --bg-glow-1: rgba(139, 92, 246, 0.16);
+  --bg-glow-2: rgba(34, 211, 238, 0.09);
+  --bg-glow-3: rgba(217, 70, 239, 0.09);
+  --bg-grad-a: #0e0920;
+  --bg-grad-b: #0b0716;
+  --noise-opacity: 0.045;
+
+  --tx: #f2eefc;
+  --tx-2: #cfc7ec;
+  --tx-3: #9b90c6;
+
+  --ink-950: #0b0716;
+  --ink-900: #120d26;
+  --ink-850: #171131;
+  --ink-800: #1f1842;
+  --ink-700: #2b2260;
+  --ink-600: #3d3185;
+
+  --gold-300: #c4b5fd;
+  --gold-400: #a78bfa;
+  --gold-500: #8b5cf6;
+
+  --c-mint: #34d399;
+  --c-cyan: #22d3ee;
+  --c-coral: #fb7185;
+  --emerald-300: #6ee7b7;
+  --emerald-400: #34d399;
+  --rose-300: #fda4af;
+  --rose-400: #fb7185;
+  --cyan-300: #67e8f9;
+  --violet-200: #ddd6fe;
+  --violet-300: #c4b5fd;
+  --violet-400: #a78bfa;
+
+  --line-6: rgba(255, 255, 255, 0.06);
+  --line-7: rgba(255, 255, 255, 0.07);
+  --line-8: rgba(255, 255, 255, 0.08);
+  --line-10: rgba(255, 255, 255, 0.10);
+  --line-12: rgba(255, 255, 255, 0.12);
+  --line-14: rgba(255, 255, 255, 0.14);
+  --line-16: rgba(255, 255, 255, 0.16);
+  --fill-3: rgba(255, 255, 255, 0.03);
+  --fill-4: rgba(255, 255, 255, 0.04);
+  --fill-5: rgba(255, 255, 255, 0.05);
+  --fill-6: rgba(255, 255, 255, 0.06);
+  --fill-9: rgba(255, 255, 255, 0.09);
+
+  --glass-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.028));
+  --glass-border: rgba(255, 255, 255, 0.13);
+  --glass-shadow:
+    0 12px 44px -14px rgba(76, 29, 149, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  --glass-blur: 22px saturate(1.3);
+  --glass-soft-bg: rgba(255, 255, 255, 0.045);
+  --glass-soft-border: rgba(255, 255, 255, 0.1);
+  --orb-opacity: 1;
+}
+
+@theme inline {
+  /* 語義色 → 運行時變數（含透明度修飾自動生效） */
+  --color-ink-950: var(--ink-950);
+  --color-ink-900: var(--ink-900);
+  --color-ink-850: var(--ink-850);
+  --color-ink-800: var(--ink-800);
+  --color-ink-700: var(--ink-700);
+  --color-ink-600: var(--ink-600);
+  --color-mist-100: var(--tx);
+  --color-mist-300: var(--tx-2);
+  --color-mist-500: var(--tx-3);
+  --color-gold-300: var(--gold-300);
+  --color-gold-400: var(--gold-400);
+  --color-gold-500: var(--gold-500);
+  --color-mint-400: var(--c-mint);
+  --color-cyan-400: var(--c-cyan);
+  --color-coral-400: var(--c-coral);
+
+  /* 狀態色跟隨主題加深／提亮 */
+  --color-emerald-300: var(--emerald-300);
+  --color-emerald-400: var(--emerald-400);
+  --color-rose-300: var(--rose-300);
+  --color-rose-400: var(--rose-400);
+  --color-cyan-300: var(--cyan-300);
+  --color-violet-200: var(--violet-200);
+  --color-violet-300: var(--violet-300);
+  --color-violet-400: var(--violet-400);
+
+  /* white/N 的主題化替身 */
+  --color-line-6: var(--line-6);
+  --color-line-7: var(--line-7);
+  --color-line-8: var(--line-8);
+  --color-line-10: var(--line-10);
+  --color-line-12: var(--line-12);
+  --color-line-14: var(--line-14);
+  --color-line-16: var(--line-16);
+  --color-fill-3: var(--fill-3);
+  --color-fill-4: var(--fill-4);
+  --color-fill-5: var(--fill-5);
+  --color-fill-6: var(--fill-6);
+  --color-fill-9: var(--fill-9);
 
   --font-display: "Space Grotesk", "Noto Sans TC", "PingFang TC", sans-serif;
   --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --font-mono: "JetBrains Mono", "Noto Sans TC", monospace;
 }
+
+/* ═══════════════ 基底 ═══════════════ */
 
 html {
   scroll-behavior: smooth;
@@ -31,31 +194,40 @@ html {
 
 body {
   font-family: var(--font-body);
-  color: var(--color-mist-100);
-  background-color: var(--color-ink-950);
+  color: var(--tx);
+  background-color: var(--bg-page);
   background-image:
-    radial-gradient(1100px 620px at 85% -10%, rgba(139, 92, 246, 0.16), transparent 62%),
-    radial-gradient(900px 640px at -15% 25%, rgba(34, 211, 238, 0.09), transparent 60%),
-    radial-gradient(820px 560px at 70% 110%, rgba(217, 70, 239, 0.09), transparent 62%),
-    linear-gradient(180deg, #0e0920 0%, #0b0716 40%, #0d0a1e 100%);
-  background-attachment: fixed;
+    radial-gradient(1100px 620px at 85% -10%, var(--bg-glow-1), transparent 62%),
+    radial-gradient(900px 640px at -15% 25%, var(--bg-glow-2), transparent 60%),
+    radial-gradient(820px 560px at 70% 110%, var(--bg-glow-3), transparent 62%),
+    linear-gradient(180deg, var(--bg-grad-a) 0%, var(--bg-page) 40%, var(--bg-grad-b) 100%);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+/* iOS 上 background-attachment:fixed 是滚动重绘杀手 —— 改用固定伪元素实现 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  pointer-events: none;
+  background-image: inherit;
 }
 
-/* 細微噪點 */
+/* 細微噪點：桌面錦上添花，行動端直接關閉省一層合成 */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 70;
   pointer-events: none;
-  opacity: 0.045;
+  opacity: var(--noise-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
 }
 
 ::selection {
-  background: var(--color-gold-500);
+  background: var(--gold-500);
   color: #fff;
 }
 
@@ -74,25 +246,42 @@ body::after {
   background: transparent;
 }
 
-/* ── 毛玻璃面板 ─────────────────────────── */
+/* ═══════════════ macOS 風格玻璃面板 ═══════════════ */
+
 .glass {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.028));
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  backdrop-filter: blur(22px) saturate(1.3);
-  -webkit-backdrop-filter: blur(22px) saturate(1.3);
-  box-shadow:
-    0 12px 44px -14px rgba(76, 29, 149, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  position: relative;
+  background: var(--glass-bg);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+/* 高光描邊：macOS 視窗的靈魂 */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--glass-border);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .glass-soft {
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--glass-soft-bg);
+  border: 1px solid var(--glass-soft-border);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 
-/* ── 膠囊按鈕 ──────────────────────────── */
+/* ═══════════════ 膠囊按鈕 ═══════════════ */
+
 .btn-primary {
   border-radius: 9999px;
   color: #fff;
@@ -107,9 +296,6 @@ body::after {
 }
 .btn-primary:hover {
   filter: brightness(1.12);
-  box-shadow:
-    0 14px 40px -8px rgba(139, 92, 246, 0.75),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
 .btn-primary:active {
@@ -118,49 +304,57 @@ body::after {
 
 .btn-ghost {
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line-16);
+  background: var(--fill-5);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  color: var(--color-mist-100);
+  color: var(--tx);
   transition:
     border-color 0.18s ease,
     background 0.18s ease,
     transform 0.18s ease;
 }
 .btn-ghost:hover {
-  border-color: rgba(167, 139, 250, 0.65);
-  background: rgba(139, 92, 246, 0.16);
+  border-color: rgba(139, 92, 246, 0.65);
+  background: rgba(139, 92, 246, 0.14);
 }
 .btn-ghost:active {
   transform: scale(0.97);
 }
 
-/* ── 漂浮光球 ──────────────────────────── */
+/* ═══════════════ 漂浮光球（僅桌面；行動端以靜態漸變代替） ═══════════════ */
+
 .orb {
   position: fixed;
   border-radius: 9999px;
   filter: blur(110px);
   pointer-events: none;
   z-index: 0;
+  opacity: var(--orb-opacity);
   will-change: transform;
+  contain: strict;
 }
 @keyframes drift-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-46px, 38px) scale(1.12); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-46px, 38px, 0) scale(1.12); }
 }
 @keyframes drift-b {
-  0%, 100% { transform: translate(0, 0) scale(1.05); }
-  50% { transform: translate(40px, -30px) scale(0.94); }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50% { transform: translate3d(40px, -30px, 0) scale(0.94); }
 }
-.orb-a { animation: drift-a 16s ease-in-out infinite; }
-.orb-b { animation: drift-b 19s ease-in-out infinite; }
-.orb-c { animation: drift-a 23s ease-in-out infinite reverse; }
+.orb-a { animation: drift-a 18s ease-in-out infinite; }
+.orb-b { animation: drift-b 22s ease-in-out infinite; }
+.orb-c { animation: drift-a 26s ease-in-out infinite reverse; }
 
-/* ── 跑馬燈 ─────────────────────────────── */
+@media (max-width: 1024px), (pointer: coarse) {
+  .orb { display: none; }
+}
+
+/* ═══════════════ 跑馬燈 ═══════════════ */
+
 @keyframes ticker-run {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
 }
 .ticker-track {
   display: flex;
@@ -171,10 +365,11 @@ body::after {
   animation-play-state: paused;
 }
 
-/* ── 進場揭示 ───────────────────────────── */
+/* ═══════════════ 進場揭示 ═══════════════ */
+
 .reveal {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translate3d(0, 22px, 0);
   transition:
     opacity 0.75s ease,
     transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
@@ -184,12 +379,14 @@ body::after {
   transform: none;
 }
 
-/* ── 成本長條 ───────────────────────────── */
+/* ═══════════════ 成本長條 ═══════════════ */
+
 .bar-fill {
   transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ── 滑桿 ──────────────────────────────── */
+/* ═══════════════ 滑桿 ═══════════════ */
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -199,7 +396,7 @@ input[type="range"] {
   background: linear-gradient(
     to right,
     #8b5cf6 var(--fill, 0%),
-    rgba(255, 255, 255, 0.1) var(--fill, 0%)
+    var(--line-10) var(--fill, 0%)
   );
   outline: none;
   cursor: pointer;
@@ -236,16 +433,18 @@ input[type="number"] {
   appearance: textfield;
 }
 
-/* ── Toast ─────────────────────────────── */
+/* ═══════════════ Toast ═══════════════ */
+
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(16px) scale(0.96); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; transform: translate3d(-50%, 16px, 0) scale(0.96); }
+  to { opacity: 1; transform: translate3d(-50%, 0, 0) scale(1); }
 }
 .toast-in {
   animation: toast-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ── 即時监测相關 ───────────────────────── */
+/* ═══════════════ 即時監測相關 ═══════════════ */
+
 @keyframes row-flash {
   0% { background-color: rgba(139, 92, 246, 0.22); }
   100% { background-color: transparent; }
@@ -268,11 +467,79 @@ input[type="number"] {
   animation: live-pulse 1.8s ease-out infinite;
 }
 
-/* ── 標題旁的呼吸光暈 ───────────────────── */
+/* 標題旁呼吸光暈 */
 @keyframes glow-pulse {
   0%, 100% { opacity: 0.55; transform: scale(1); }
   50% { opacity: 0.95; transform: scale(1.15); }
 }
 .glow-pulse {
   animation: glow-pulse 5.5s ease-in-out infinite;
+}
+
+/* ═══════════════ 主題切換按鈕動畫 ═══════════════ */
+
+.theme-toggle-icon {
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.theme-toggle-icon:hover {
+  transform: rotate(40deg) scale(1.08);
+}
+
+/* ═══════════════ 行動端性能降級 ═══════════════
+   手機 GPU 撑不起大面積即時模糊 —— 全部換成不透明實底，
+   視覺近似、成本驟降；同時收緊字級與間距比例。 */
+@media (max-width: 768px), (pointer: coarse) and (hover: none) {
+  body::after { display: none; }          /* 噪點層關閉 */
+  [data-theme="light"] .glass {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      0 1px 2px rgba(30, 20, 80, 0.05),
+      0 10px 30px -12px rgba(70, 50, 160, 0.18);
+  }
+  [data-theme="dark"] .glass {
+    background: #14102a;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      0 12px 36px -14px rgba(0, 0, 0, 0.65),
+      inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  }
+  .glass-soft {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .btn-ghost {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  /* 減少昂貴陰影半徑 */
+  .btn-primary { box-shadow: 0 6px 18px -6px rgba(139, 92, 246, 0.5); }
+  .glow-pulse { animation: none; opacity: 0.4; }   /* 大面積 blur 光暈停用 */
+  /* 導航欄／Toast 等 Tailwind backdrop 工具類一律停用：
+     sticky 元素下的即時模糊是手機滾動掉幀的第一元兇 */
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* 停用模糊後補不透明度，保證導航欄可讀性 */
+  [data-theme="light"] .bg-ink-950\/70 { background-color: rgba(252, 251, 255, 0.88); }
+  [data-theme="dark"] .bg-ink-950\/70 { background-color: rgba(11, 7, 22, 0.88); }
+}
+
+/* 小螢幕排版比例緊湊化：修正「比例過大」的擁擠感來源 */
+@media (max-width: 640px) {
+  html { font-size: 15px; }
+}
+
+/* ═══════════════ 動效偏好尊重 ═══════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
 }

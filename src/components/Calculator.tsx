@@ -37,7 +37,7 @@ function Slider({
             max={max}
             value={value}
             onChange={(e) => onChange(Math.max(0, Math.min(max, Number(e.target.value) || 0)))}
-            className="w-16 rounded-lg border border-white/14 bg-ink-950/60 px-1.5 py-0.5 text-right text-sm font-bold text-violet-300 outline-none transition-colors focus:border-violet-400/70"
+            className="w-16 rounded-lg border border-line-14 bg-ink-950/60 px-1.5 py-0.5 text-right text-sm font-bold text-violet-300 outline-none transition-colors focus:border-violet-400/70"
           />
           <span className="text-xs text-mist-500">M</span>
         </p>
@@ -102,7 +102,7 @@ export default function Calculator() {
             <Slider label={t("cCache")} hint={t("cCacheHint")} value={cacheM} max={1000} step={5} onChange={setCacheM} />
             <Slider label={t("cOutput")} hint={t("cOutputHint")} value={outM} max={500} step={1} onChange={setOutM} />
           </div>
-          <div className="mt-6 border-t border-white/10 pt-4">
+          <div className="mt-6 border-t border-line-10 pt-4">
             <p className="text-[11px] font-bold tracking-wider text-mist-500">{t("cPresets")}</p>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {PRESETS.map((p) => (
@@ -116,7 +116,7 @@ export default function Calculator() {
                   className={`cursor-pointer rounded-full border px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
                     activePreset?.key === p.key
                       ? "border-transparent bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-[0_4px_16px_rgba(139,92,246,0.4)]"
-                      : "border-white/14 bg-white/5 text-mist-500 hover:border-violet-400/50 hover:text-mist-300"
+                      : "border-line-14 bg-fill-5 text-mist-500 hover:border-violet-400/50 hover:text-mist-300"
                   }`}
                 >
                   {t(p.key)}
@@ -164,7 +164,7 @@ export default function Calculator() {
                       ¥{it.cost.toFixed(2)}
                     </p>
                   </div>
-                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-white/6">
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-fill-6">
                     <div
                       className={`bar-fill h-full rounded-full ${
                         isBest
@@ -194,7 +194,7 @@ export default function Calculator() {
               </p>
             </div>
           ) : (
-            <p className="mt-5 rounded-2xl border border-white/12 bg-white/4 p-4 text-sm text-mist-500">{t("cEmpty")}</p>
+            <p className="mt-5 rounded-2xl border border-line-12 bg-fill-4 p-4 text-sm text-mist-500">{t("cEmpty")}</p>
           )}
         </div>
       </div>

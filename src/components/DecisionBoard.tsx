@@ -19,7 +19,7 @@ export default function DecisionBoard() {
             <li
               key={d.need}
               className={`group grid cursor-default grid-cols-[44px_1fr] items-center gap-x-3 px-5 py-4.5 transition-all duration-200 hover:bg-violet-500/8 sm:grid-cols-[56px_200px_36px_1fr] sm:px-7 ${
-                i > 0 ? "border-t border-white/7" : ""
+                i > 0 ? "border-t border-line-7" : ""
               }`}
             >
               <span className="font-mono text-sm font-bold text-mist-500/60 transition-colors duration-150 group-hover:text-violet-300">
