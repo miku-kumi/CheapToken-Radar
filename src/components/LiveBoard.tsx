@@ -46,7 +46,7 @@ function Cell({ v, live, approx }: { v: number | null; live?: boolean; approx?: 
   const { t } = useI18n();
   return (
     <td className="px-4 py-3.5 text-right font-mono text-sm whitespace-nowrap">
-      {v === null ? (
+      {v == null ? (
         <span className="text-mist-500/40">—</span>
       ) : v === 0 ? (
         <span className="rounded-full bg-emerald-400/14 px-2.5 py-0.5 text-xs font-bold text-emerald-300">{t("tFree")}</span>

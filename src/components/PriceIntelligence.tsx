@@ -21,26 +21,30 @@ export interface IQPoint {
   input: number;
 }
 
-function ChartTip({ active, payload }: { active?: boolean; payload?: Array<{ payload: IQPoint }> }) {
+function ChartTip({ active, payload }: { active?: boolean; payload?: Array<{ payload?: Partial<IQPoint> }> }) {
   const { lang, t } = useI18n();
   if (!active || !payload?.length) return null;
-  const p = payload[0].payload;
+  // 只取帶完整欄位的散點：recharts v3 的 tooltip payload 也可能命中「性價比前沿線」
+  // 上的點（該點只有 x/y、沒有 input），直接略過，避免 undefined.toFixed 崩潰。
+  const p = payload.find((e) => e.payload && typeof e.payload.input === "number" && typeof e.payload.x === "number" && typeof e.payload.y === "number")?.payload;
+  if (!p || typeof p.input !== "number" || typeof p.x !== "number" || typeof p.y !== "number" || !p.name) return null;
+  const out = p.x;
   return (
     <div className="glass rounded-2xl px-4 py-3 text-xs shadow-[0_10px_36px_rgba(15,8,40,0.65)]">
       <p className="font-mono text-sm font-bold text-mist-100">{p.name}</p>
       <p className="mt-1 flex items-center gap-1.5 text-mist-500">
-        <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: LIVE_PLATFORM_DOT[p.platform] }} />
-        {platformName(p.platform, lang)}
+        <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: LIVE_PLATFORM_DOT[p.platform ?? ""] }} />
+        {platformName(p.platform ?? "", lang)}
       </p>
       <div className="mt-2 grid grid-cols-2 gap-x-5 gap-y-1 font-mono text-[11px]">
         <span className="text-mist-500">{t("iqInput")}</span>
         <span className="text-right text-mist-100">¥{p.input.toFixed(2)}/M</span>
         <span className="text-mist-500">{t("iqOutput")}</span>
-        <span className="text-right text-mist-100">¥{p.x.toFixed(2)}/M</span>
+        <span className="text-right text-mist-100">¥{out.toFixed(2)}/M</span>
         <span className="text-mist-500">{t("iqIq")}</span>
         <span className="text-right font-bold text-violet-300">{p.y}</span>
         <span className="text-mist-500">{t("iqPerYuan")}</span>
-        <span className="text-right font-bold text-cyan-300">{(p.y / p.x).toFixed(1)}</span>
+        <span className="text-right font-bold text-cyan-300">{out > 0 ? (p.y / out).toFixed(1) : "—"}</span>
       </div>
     </div>
   );
