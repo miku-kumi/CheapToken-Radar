@@ -496,13 +496,78 @@ input[type="number"] {
   animation: glow-pulse 5.5s ease-in-out infinite;
 }
 
+/* ═══════════════ 主題切換過渡動畫 ═══════════════ */
+
+/* View Transitions：舊幀靜止、新幀由 JS 驅動圓形揭示 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2;
+}
+/* 切換期間鎖住滾動，避免快照錯位 */
+html:has(::view-transition-new(root)) {
+  overflow: hidden;
+}
+
+/* 非 Chromium 瀏覽器兜底：切換瞬間全站顏色淡入 */
+.theming,
+.theming *,
+.theming *::before,
+.theming *::after {
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease,
+    fill 0.5s ease,
+    stroke 0.5s ease,
+    box-shadow 0.5s ease !important;
+}
+
 /* ═══════════════ 主題切換按鈕動畫 ═══════════════ */
 
 .theme-toggle-icon {
-  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
 }
-.theme-toggle-icon:hover {
-  transform: rotate(40deg) scale(1.08);
+.theme-toggle-icon svg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  transition:
+    opacity 0.35s ease,
+    transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+html[data-theme="light"] .theme-toggle-icon .icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+html[data-theme="light"] .theme-toggle-icon .icon-moon {
+  opacity: 0;
+  transform: rotate(120deg) scale(0.4);
+}
+html[data-theme="dark"] .theme-toggle-icon .icon-sun {
+  opacity: 0;
+  transform: rotate(-120deg) scale(0.4);
+}
+html[data-theme="dark"] .theme-toggle-icon .icon-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+@media (hover: hover) {
+  .theme-toggle-icon:hover svg {
+    transform-origin: center;
+  }
+  html[data-theme="light"] .theme-toggle-icon:hover .icon-sun {
+    transform: rotate(40deg) scale(1.12);
+  }
+  html[data-theme="dark"] .theme-toggle-icon:hover .icon-moon {
+    transform: rotate(-30deg) scale(1.12);
+  }
 }
 
 /* ═══════════════ 行動端性能降級 ═══════════════
@@ -546,6 +611,11 @@ input[type="number"] {
   /* 停用模糊後補不透明度，保證導航欄可讀性 */
   [data-theme="light"] .bg-ink-950\/70 { background-color: rgba(252, 251, 255, 0.88); }
   [data-theme="dark"] .bg-ink-950\/70 { background-color: rgba(11, 7, 22, 0.88); }
+}
+
+/* 淺色模式下標題後的紫色光暈像污漬 —— 直接隱藏 */
+[data-theme="light"] .glow-pulse {
+  display: none;
 }
 
 /* 觸摸裝置：滑桿拇指加大到 24px，符合 44pt 觸控目標建議 */

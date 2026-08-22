@@ -97,14 +97,16 @@ function ThemeToggle() {
   const label = isDark ? "Switch to light mode" : "Switch to dark mode";
   return (
     <button
-      onClick={toggle}
+      onClick={(e) => toggle({ x: e.clientX, y: e.clientY })}
       title={label}
       aria-label={label}
       aria-pressed={isDark}
       className="btn-ghost flex h-[30px] w-[30px] items-center justify-center !rounded-full"
     >
-      <span className="theme-toggle-icon relative flex h-4 w-4 items-center justify-center text-violet-300">
-        {isDark ? <IconMoon className="h-4 w-4" /> : <IconSun className="h-4 w-4" />}
+      {/* 雙圖標堆疊：主題切換時旋轉交錯變形 */}
+      <span className="theme-toggle-icon block h-4 w-4 text-violet-300">
+        <IconSun className="icon-sun h-4 w-4" />
+        <IconMoon className="icon-moon h-4 w-4" />
       </span>
     </button>
   );
@@ -354,6 +356,15 @@ export default function App() {
   );
 }
 
+/** 路由切換自動回到頂部（錨點導航不受影響） */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [pathname]);
+  return null;
+}
+
 function Shell() {
   const { t } = useI18n();
   const [toast, setToast] = useState<string | null>(null);
@@ -367,6 +378,7 @@ function Shell() {
 
   return (
     <div id="top" className="relative min-h-screen overflow-x-clip">
+      <ScrollToTop />
       {/* 環境光層 */}
       <div className="pointer-events-none fixed inset-0 -z-10">
         <div className="orb orb-a" />
@@ -415,7 +427,10 @@ function Shell() {
               <Suspense
                 fallback={
                   <main className="mx-auto flex min-h-[60vh] max-w-6xl items-center justify-center px-5">
-                    <p className="font-mono text-xs text-mist-500">{t("lLoading")}…</p>
+                    <div className="glass flex flex-col items-center gap-4 rounded-[1.75rem] px-12 py-9">
+                      <span className="spin-slow inline-block h-7 w-7 rounded-full border-2 border-violet-400/25 border-t-violet-400" />
+                      <p className="font-mono text-xs text-mist-500">{t("lLoading")}…</p>
+                    </div>
                   </main>
                 }
               >
